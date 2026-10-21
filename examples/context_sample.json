@@ -1,0 +1,6 @@
+{
+  "company": "B2B subscription billing platform (example)",
+  "quarter_goal": "Reduce churn among SMB customers and unlock the first enterprise deals",
+  "team": "1 PM, 1 designer, 4 engineers",
+  "constraints": ["No major re-platforming this quarter", "Support team is overloaded with billing tickets"]
+}
