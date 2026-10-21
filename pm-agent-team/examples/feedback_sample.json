@@ -1,0 +1,9 @@
+[
+  {"id": "T-101", "source": "support", "segment": "SMB", "text": "I was charged twice after upgrading my plan mid-cycle and nobody could explain the proration."},
+  {"id": "T-102", "source": "support", "segment": "Enterprise", "text": "We need invoices that split charges by cost center. Finance does this by hand every month."},
+  {"id": "T-103", "source": "interview", "segment": "SMB", "text": "I never know what my next bill will be. The amounts change and I can't tell why."},
+  {"id": "T-104", "source": "review", "segment": "SMB", "text": "Cancelled because I couldn't figure out how to downgrade without losing my data."},
+  {"id": "T-105", "source": "sales", "segment": "Enterprise", "text": "Prospect asked for usage-based pricing with a committed minimum. We only offer flat tiers."},
+  {"id": "T-106", "source": "support", "segment": "SMB", "text": "Failed payment, then my account was locked immediately with no warning email."},
+  {"id": "T-107", "source": "interview", "segment": "Enterprise", "text": "Our AP team can't download invoices in bulk. Takes hours at quarter end."}
+]
