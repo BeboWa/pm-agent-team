@@ -3,7 +3,7 @@
 Usage:
   python -m agents.prioritization.run                              # uses outputs/discovery_report.md
   python -m agents.prioritization.run examples/discovery_report_sample.md
-  python -m agents.prioritization.run <report.md> examples/context_sample.json
+  python -m agents.prioritization.run outputs/diagnostic_report.md examples/context_sample.json
 """
 import sys
 from pathlib import Path
@@ -14,7 +14,7 @@ from .prompt import SYSTEM_PROMPT
 
 def run(report_path: str = "outputs/discovery_report.md", context_path: str | None = None) -> str:
     report = Path(report_path).read_text()
-    user_msg = "## Discovery report\n\n" + report
+    user_msg = "## Input report\n\n" + report
     if context_path:
         user_msg += "\n\n## Business context\n\n" + Path(context_path).read_text()
 

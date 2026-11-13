@@ -1,0 +1,36 @@
+{
+  "_note": "SYNTHETIC example company for demonstration. Not a real business.",
+  "company": "Beacon (synthetic B2B SaaS)",
+  "description": "Project-management and reporting software for 10-200 person agencies. Self-serve signup plus a small sales team for larger accounts.",
+  "stage": "Series A, about 4 years old",
+  "period": "last 12 months",
+  "mrr_start": 400000,
+  "new_mrr": 180000,
+  "expansion_mrr": 40000,
+  "contraction_mrr": 25000,
+  "churned_mrr": 95000,
+  "mrr_end": 500000,
+  "involuntary_churn_share": 0.4,
+  "customers_start": 1600,
+  "new_customers": 700,
+  "churned_customers": 400,
+  "customers_end": 1900,
+  "gross_margin": 0.78,
+  "sales_marketing_spend": 1200000,
+  "blended_cac": 1714,
+  "pricing": [
+    {"tier": "Starter", "price_monthly_per_workspace": 49, "limits": "5 users"},
+    {"tier": "Team", "price_monthly_per_workspace": 149, "limits": "25 users"},
+    {"tier": "Business", "price_monthly_per_workspace": 399, "limits": "100 users, SSO"}
+  ],
+  "pricing_notes": "Flat per-workspace pricing. No usage or seat expansion. About 15% of customers are on annual plans. Frequent 20% discounts to close deals.",
+  "funnel": {"visitors": 240000, "signups": 9600, "activated": 3360, "paid": 700},
+  "competitors": ["Asana", "Monday.com", "a cheaper niche agency tool"],
+  "qualitative": [
+    "Support tickets frequently mention surprise charges and failed-card lockouts.",
+    "Reviews praise reporting but say onboarding is confusing.",
+    "Larger agencies ask for per-seat pricing and client-facing dashboards.",
+    "Sales team reports losing deals on missing SSO below the Business tier."
+  ],
+  "known_constraints": ["Engineering team of 8", "Runway about 20 months", "Board wants to see a path to profitability"]
+}

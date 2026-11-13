@@ -1,9 +1,9 @@
 # Agent 2: Prioritization
 
-**Job:** Turn Discovery's problem themes into a ranked, scored roadmap with visible reasoning.
+**Job:** Turn Discovery themes (or Company Diagnostic bets) into a ranked, scored roadmap with visible reasoning.
 
 **Inputs:**
-- A Discovery report (Markdown), by default `outputs/discovery_report.md`
+- A Discovery or Company Diagnostic report (Markdown), by default `outputs/discovery_report.md`
 - Optional `context.json`: business goals, constraints (team size, quarter, strategy), so scoring reflects reality
 
 **Output:** Markdown report with:
