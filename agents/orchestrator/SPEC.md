@@ -8,7 +8,9 @@
 3. Prioritization: diagnosis (plus discovery, if provided) in, RICE-ranked roadmap out
 4. PRD: top-ranked item in, buildable PRD out
 
-**Inputs:** company dossier (required); `--feedback` file, `--context` file, `--item N`, `--manual-minutes N` (your hand-done baseline), `--no-log`.
+With `--full`, it also runs Pricing & Billing (after the Diagnostic, and fed into Prioritization) and, after the PRD, Delivery, Launch / GTM and Analytics: all 8 agents.
+
+**Inputs:** company dossier (required); `--feedback` file, `--context` file, `--item N`, `--full`, `--baseline` / `--mde` (Analytics sample-size math), `--manual-minutes N` (your hand-done baseline), `--no-log`.
 
 **Outputs:** every stage report plus `outputs/pipeline_summary.md`: per-stage time, tokens, cost, quality-gate results, totals, and time saved if a baseline was given. Also appends a row to `evals/results.csv` (skip with `--no-log`).
 

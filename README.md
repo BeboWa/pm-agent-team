@@ -2,7 +2,7 @@
 
 A team of AI agents that covers the full product management lifecycle, from company diagnosis and customer discovery to launch and post-launch analytics, built to cut PM cycle time and cost.
 
-> **Status:** Company Diagnostic, Discovery, Prioritization, PRD and the Orchestrator are built. Others are scaffolded and shipping one at a time.
+> **Status:** All 9 components are built: the Company Diagnostic, 7 specialist agents and the Orchestrator that runs them end to end.
 
 ## Results (updated as agents ship)
 
@@ -22,10 +22,10 @@ A team of AI agents that covers the full product management lifecycle, from comp
 | 2 | Prioritization | Scores opportunities, drafts roadmap with reasoning | Built |
 | 3 | PRD | PRDs, user stories, acceptance criteria | Built |
 | 4 | Orchestrator | Runs the team end to end, hands off context, quality-gates, reports time and cost | Built |
-| 5 | Delivery | Backlog, sprint planning, risks, status updates | Planned |
-| 6 | Launch / GTM | Release notes, positioning, enablement | Planned |
-| 7 | Analytics | Success metrics, experiment readouts, feedback loop | Planned |
-| 8 | Pricing & Billing | Pricing/packaging analysis, billing-feature specs | Planned |
+| 5 | Delivery | Backlog, sprint planning, risks, status updates | Built |
+| 6 | Launch / GTM | Release notes, positioning, enablement | Built |
+| 7 | Analytics | Success metrics, experiment readouts, feedback loop | Built |
+| 8 | Pricing & Billing | Pricing/packaging analysis, billing-feature specs | Built |
 
 ## Quick start
 
@@ -36,6 +36,10 @@ python -m agents.diagnostic.run examples/company_dossier_sample.json
 python -m agents.discovery.run examples/feedback_sample.json
 python -m agents.prioritization.run outputs/discovery_report.md examples/context_sample.json
 python -m agents.prd.run outputs/prioritization_report.md --item 1
+python -m agents.pricing_billing.run examples/company_dossier_sample.json
+python -m agents.delivery.run outputs/prd_item_1.md
+python -m agents.launch.run outputs/prd_item_1.md
+python -m agents.analytics.run outputs/prd_item_1.md --baseline 0.208 --mde 0.10
 ```
 
 ## Run the whole team in one command
@@ -45,9 +49,12 @@ python -m agents.orchestrator.run examples/company_dossier_sample.json \
   --feedback examples/feedback_sample.json \
   --context examples/context_sample.json \
   --manual-minutes 240
+
+# all 8 agents:
+python -m agents.orchestrator.run examples/company_dossier_sample.json --full
 ```
 
-The Orchestrator runs Diagnostic, Discovery, Prioritization and PRD in order, checks each output for required sections, and writes `outputs/pipeline_summary.md` with per-stage time, tokens and cost, plus time saved against your manual baseline.
+The Orchestrator runs Diagnostic, Discovery, Prioritization and PRD in order (add `--full` for Pricing & Billing, Delivery, Launch / GTM and Analytics), checks each output for required sections, and writes `outputs/pipeline_summary.md` with per-stage time, tokens and cost, plus time saved against your manual baseline.
 
 ## Design principles
 

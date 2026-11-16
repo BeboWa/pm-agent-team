@@ -19,18 +19,46 @@
   "sales_marketing_spend": 1200000,
   "blended_cac": 1714,
   "pricing": [
-    {"tier": "Starter", "price_monthly_per_workspace": 49, "limits": "5 users"},
-    {"tier": "Team", "price_monthly_per_workspace": 149, "limits": "25 users"},
-    {"tier": "Business", "price_monthly_per_workspace": 399, "limits": "100 users, SSO"}
+    {
+      "tier": "Starter",
+      "price_monthly_per_workspace": 49,
+      "limits": "5 users"
+    },
+    {
+      "tier": "Team",
+      "price_monthly_per_workspace": 149,
+      "limits": "25 users"
+    },
+    {
+      "tier": "Business",
+      "price_monthly_per_workspace": 399,
+      "limits": "100 users, SSO"
+    }
   ],
   "pricing_notes": "Flat per-workspace pricing. No usage or seat expansion. About 15% of customers are on annual plans. Frequent 20% discounts to close deals.",
-  "funnel": {"visitors": 240000, "signups": 9600, "activated": 3360, "paid": 700},
-  "competitors": ["Asana", "Monday.com", "a cheaper niche agency tool"],
+  "funnel": {
+    "visitors": 240000,
+    "signups": 9600,
+    "activated": 3360,
+    "paid": 700
+  },
+  "competitors": [
+    "Asana",
+    "Monday.com",
+    "a cheaper niche agency tool"
+  ],
   "qualitative": [
     "Support tickets frequently mention surprise charges and failed-card lockouts.",
     "Reviews praise reporting but say onboarding is confusing.",
     "Larger agencies ask for per-seat pricing and client-facing dashboards.",
     "Sales team reports losing deals on missing SSO below the Business tier."
   ],
-  "known_constraints": ["Engineering team of 8", "Runway about 20 months", "Board wants to see a path to profitability"]
+  "known_constraints": [
+    "Engineering team of 8",
+    "Runway about 20 months",
+    "Board wants to see a path to profitability"
+  ],
+  "annual_plan_share": 0.15,
+  "discounted_deal_share": 0.6,
+  "avg_discount": 0.2
 }

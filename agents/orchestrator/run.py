@@ -6,11 +6,13 @@ Usage:
       --feedback examples/feedback_sample.json \
       --context examples/context_sample.json \
       --manual-minutes 240
+  python -m agents.orchestrator.run examples/company_dossier_sample.json --full   # all 8 agents
 """
 import argparse
 import contextlib
 import csv
 import io
+import json
 import os
 import sys
 import time
@@ -19,18 +21,30 @@ from pathlib import Path
 from shared import llm
 from agents.diagnostic.run import run as run_diagnostic
 from agents.discovery.run import run as run_discovery
+from agents.pricing_billing.run import run as run_pricing
 from agents.prioritization.run import run as run_prioritization
 from agents.prd.run import run as run_prd
+from agents.delivery.run import run as run_delivery
+from agents.launch.run import run as run_launch
+from agents.analytics.run import run as run_analytics
 
 REQUIRED_SECTIONS = {
     "Company Diagnostic": ["Business Model Snapshot", "Health Scorecard", "Revenue Equation",
                            "Leaks and Levers", "Monetization", "Strategic Bets", "Data Gaps",
                            "Handoff to Prioritization"],
+    "Pricing & Billing": ["Current Monetization Model", "Scenario Math", "Recommended Pricing and Packaging",
+                          "Billing and Payments Implications", "Migration and Rollout", "Test Plan and Risks"],
     "Discovery": ["Top Themes", "Evidence by Theme", "Segments Affected", "Open Questions"],
     "Prioritization": ["Ranked Opportunities", "Scoring Rationale", "Now / Next / Later",
                        "Not Doing", "Risks"],
     "PRD": ["Problem and Evidence", "Goals and Non-Goals", "Target Users", "Requirements",
             "User Stories", "Success Metrics", "Risks", "Rollout"],
+    "Delivery": ["Backlog", "Dependencies and Critical Path", "Sprint Plan", "Risks and Mitigations",
+                 "Stakeholder Status Update"],
+    "Launch / GTM": ["Positioning", "Messaging by Audience", "Release Notes", "Launch Plan and Checklist",
+                     "Sales and Support Enablement", "Launch Risks"],
+    "Analytics": ["Metric Framework", "Tracking Plan", "Experiment Design", "Decision Rules",
+                  "Readout Template", "Feedback Loop"],
 }
 
 
@@ -82,7 +96,7 @@ def build_summary(company: str, stages: list, wall: float, manual_minutes) -> st
         saved = round(manual_minutes - wall / 60, 1)
         lines += [f"Manual baseline: {manual_minutes} min. Pipeline: {round(wall / 60, 1)} min. Time saved: about {saved} min.", ""]
     lines += [
-        "Outputs are in the `outputs/` folder: diagnostic_report.md, prioritization_report.md, and the PRD.",
+        "All stage reports are in the `outputs/` folder.",
         "",
         "_The quality gate checks structure only (are all required sections present). "
         "A human should review the substance. Everything here is a hypothesis to validate._",
@@ -99,7 +113,7 @@ def log_to_evals(company: str, stages: list, wall: float, manual_minutes) -> Non
         w = csv.writer(f)
         if new:
             w.writerow(["agent", "task", "manual_minutes", "agent_seconds", "cost_usd", "quality_notes"])
-        w.writerow(["pipeline", f"{company} full run", manual_minutes or "", round(wall, 1),
+        w.writerow(["pipeline", f"{company} full run ({len(stages)} stages)", manual_minutes or "", round(wall, 1),
                     round(sum(s["cost"] for s in stages), 4), note])
 
 
@@ -109,6 +123,10 @@ def main() -> None:
     ap.add_argument("--feedback", help="Optional customer feedback JSON (adds the Discovery stage)")
     ap.add_argument("--context", help="Optional business context JSON")
     ap.add_argument("--item", type=int, default=1, help="Which ranked item to write the PRD for (default 1)")
+    ap.add_argument("--full", action="store_true",
+                    help="Also run Pricing & Billing, Delivery, Launch / GTM and Analytics (all 8 agents)")
+    ap.add_argument("--baseline", type=float, help="Analytics: baseline conversion rate, e.g. 0.208")
+    ap.add_argument("--mde", type=float, help="Analytics: relative minimum detectable effect, e.g. 0.10")
     ap.add_argument("--manual-minutes", type=float, help="How long this took you by hand, to compute time saved")
     ap.add_argument("--no-log", action="store_true", help="Do not append a row to evals/results.csv")
     a = ap.parse_args()
@@ -116,24 +134,32 @@ def main() -> None:
     if not os.environ.get("ANTHROPIC_API_KEY"):
         sys.exit("ANTHROPIC_API_KEY is not set. Run: export ANTHROPIC_API_KEY=your_key")
 
-    import json
     company = json.loads(Path(a.dossier).read_text()).get("company", "company")
-    total = 4 if a.feedback else 3
+    total = 3 + (1 if a.feedback else 0) + (4 if a.full else 0)
     stages, i = [], 0
     wall_start = time.time()
     try:
         i += 1
         diag = run_stage(i, total, "Company Diagnostic", run_diagnostic, a.dossier)
         stages.append(diag)
+        combined = "# Company Diagnostic report\n\n" + diag["output"]
 
-        prio_input = "outputs/diagnostic_report.md"
+        if a.full:
+            i += 1
+            pricing = run_stage(i, total, "Pricing & Billing", run_pricing, a.dossier, "outputs/diagnostic_report.md")
+            stages.append(pricing)
+            combined += "\n\n# Pricing & Billing report\n\n" + pricing["output"]
+
         if a.feedback:
             i += 1
             disc = run_stage(i, total, "Discovery", run_discovery, a.feedback)
             stages.append(disc)
-            combined = ("# Company Diagnostic report\n\n" + diag["output"] +
-                        "\n\n# Customer Discovery report\n\n" + disc["output"])
+            combined += "\n\n# Customer Discovery report\n\n" + disc["output"]
+
+        prio_input = "outputs/diagnostic_report.md"
+        if a.full or a.feedback:
             prio_input = "outputs/prioritization_input.md"
+            Path("outputs").mkdir(exist_ok=True)
             Path(prio_input).write_text(combined)
 
         i += 1
@@ -143,6 +169,16 @@ def main() -> None:
         i += 1
         prd = run_stage(i, total, "PRD", run_prd, "outputs/prioritization_report.md", a.item, a.context)
         stages.append(prd)
+        prd_path = f"outputs/prd_item_{a.item}.md"
+
+        if a.full:
+            i += 1
+            stages.append(run_stage(i, total, "Delivery", run_delivery, prd_path, a.context))
+            i += 1
+            stages.append(run_stage(i, total, "Launch / GTM", run_launch, prd_path, "outputs/diagnostic_report.md"))
+            i += 1
+            stages.append(run_stage(i, total, "Analytics", run_analytics, prd_path,
+                                    "outputs/diagnostic_report.md", a.baseline, a.mde))
     except Exception as e:  # stop cleanly, show what finished
         print(f"\nPipeline stopped at stage {i}: {type(e).__name__}: {e}")
         print("Completed stages are saved in outputs/. Fix the issue and re-run.")
