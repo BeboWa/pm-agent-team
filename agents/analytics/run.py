@@ -5,6 +5,7 @@ Usage:
   python -m agents.analytics.run outputs/prd_item_1.md --baseline 0.208 --mde 0.10
   python -m agents.analytics.run outputs/prd_item_1.md --diagnostic outputs/diagnostic_report.md
 """
+from __future__ import annotations
 import argparse
 import json
 from pathlib import Path

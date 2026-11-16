@@ -4,6 +4,7 @@ Usage:
   python -m agents.launch.run                                     # uses outputs/prd_item_1.md
   python -m agents.launch.run outputs/prd_item_1.md outputs/diagnostic_report.md
 """
+from __future__ import annotations
 import sys
 from pathlib import Path
 

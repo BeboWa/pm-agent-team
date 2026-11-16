@@ -4,6 +4,7 @@ Usage:
   python -m agents.pricing_billing.run examples/company_dossier_sample.json
   python -m agents.pricing_billing.run examples/company_dossier_sample.json outputs/diagnostic_report.md
 """
+from __future__ import annotations
 import json
 import sys
 from pathlib import Path

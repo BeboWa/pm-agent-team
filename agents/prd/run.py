@@ -6,6 +6,7 @@ Usage:
   python -m agents.prd.run <report.md> --item 2              # PRD for the 2nd ranked item
   python -m agents.prd.run <report.md> --context examples/context_sample.json
 """
+from __future__ import annotations
 import argparse
 from pathlib import Path
 

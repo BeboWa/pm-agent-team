@@ -5,6 +5,7 @@ Usage:
   python -m agents.prioritization.run examples/discovery_report_sample.md
   python -m agents.prioritization.run outputs/diagnostic_report.md examples/context_sample.json
 """
+from __future__ import annotations
 import sys
 from pathlib import Path
 

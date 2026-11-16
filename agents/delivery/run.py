@@ -4,6 +4,7 @@ Usage:
   python -m agents.delivery.run                                  # uses outputs/prd_item_1.md
   python -m agents.delivery.run outputs/prd_item_1.md examples/context_sample.json
 """
+from __future__ import annotations
 import sys
 from pathlib import Path
 
