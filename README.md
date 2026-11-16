@@ -2,7 +2,7 @@
 
 A team of AI agents that covers the full product management lifecycle, from company diagnosis and customer discovery to launch and post-launch analytics, built to cut PM cycle time and cost.
 
-> **Status:** Company Diagnostic, Discovery, Prioritization and PRD agents are built. Others are scaffolded and shipping one at a time.
+> **Status:** Company Diagnostic, Discovery, Prioritization, PRD and the Orchestrator are built. Others are scaffolded and shipping one at a time.
 
 ## Results (updated as agents ship)
 
@@ -21,7 +21,7 @@ A team of AI agents that covers the full product management lifecycle, from comp
 | 1 | Discovery | Synthesizes feedback, tickets, interviews into themes | Built |
 | 2 | Prioritization | Scores opportunities, drafts roadmap with reasoning | Built |
 | 3 | PRD | PRDs, user stories, acceptance criteria | Built |
-| 4 | Orchestrator | Routing, context handoff, quality checks | Planned |
+| 4 | Orchestrator | Runs the team end to end, hands off context, quality-gates, reports time and cost | Built |
 | 5 | Delivery | Backlog, sprint planning, risks, status updates | Planned |
 | 6 | Launch / GTM | Release notes, positioning, enablement | Planned |
 | 7 | Analytics | Success metrics, experiment readouts, feedback loop | Planned |
@@ -37,6 +37,17 @@ python -m agents.discovery.run examples/feedback_sample.json
 python -m agents.prioritization.run outputs/discovery_report.md examples/context_sample.json
 python -m agents.prd.run outputs/prioritization_report.md --item 1
 ```
+
+## Run the whole team in one command
+
+```bash
+python -m agents.orchestrator.run examples/company_dossier_sample.json \
+  --feedback examples/feedback_sample.json \
+  --context examples/context_sample.json \
+  --manual-minutes 240
+```
+
+The Orchestrator runs Diagnostic, Discovery, Prioritization and PRD in order, checks each output for required sections, and writes `outputs/pipeline_summary.md` with per-stage time, tokens and cost, plus time saved against your manual baseline.
 
 ## Design principles
 

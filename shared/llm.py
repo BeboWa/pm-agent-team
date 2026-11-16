@@ -10,6 +10,9 @@ MODEL = os.environ.get("PM_AGENT_MODEL", "claude-sonnet-4-6")
 PRICING = {"claude-sonnet-4-6": (3.0, 15.0)}
 
 
+RUN_LOG: list = []  # every call's metrics, in order; the Orchestrator reads this
+
+
 @dataclass
 class RunMetrics:
     seconds: float
@@ -31,4 +34,6 @@ def call_llm(system: str, user: str, max_tokens: int = 4000):
     text = "".join(b.text for b in resp.content if b.type == "text")
     in_p, out_p = PRICING.get(MODEL, (0.0, 0.0))
     cost = (resp.usage.input_tokens * in_p + resp.usage.output_tokens * out_p) / 1_000_000
-    return text, RunMetrics(elapsed, resp.usage.input_tokens, resp.usage.output_tokens, round(cost, 4))
+    metrics = RunMetrics(elapsed, resp.usage.input_tokens, resp.usage.output_tokens, round(cost, 4))
+    RUN_LOG.append(metrics)
+    return text, metrics
