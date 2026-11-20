@@ -19,7 +19,7 @@ def run(dossier_path: str) -> str:
         "## Company dossier\n\n```json\n" + json.dumps(dossier, indent=2) + "\n```\n\n"
         "## Computed metrics (use exactly as given)\n\n```json\n" + json.dumps(metrics, indent=2) + "\n```"
     )
-    report, m = call_llm(SYSTEM_PROMPT, user_msg, max_tokens=7000)
+    report, m = call_llm(SYSTEM_PROMPT, user_msg, max_tokens=9000)
     report += (
         f"\n\n---\n_Run metrics: {m.seconds:.1f}s, "
         f"{m.input_tokens} in / {m.output_tokens} out tokens, ~${m.cost_usd}_\n"

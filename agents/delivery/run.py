@@ -17,7 +17,7 @@ def run(prd_path: str = "outputs/prd_item_1.md", context_path: str | None = None
     ctx = read_optional(context_path)
     if ctx:
         msg += "\n\n## Team and business context\n\n" + ctx
-    return run_agent(SYSTEM_PROMPT, msg, "delivery_plan.md", max_tokens=6000)
+    return run_agent(SYSTEM_PROMPT, msg, "delivery_plan.md", max_tokens=8000)
 
 
 if __name__ == "__main__":

@@ -24,7 +24,7 @@ def run(dossier_path: str, diagnostic_path: str | None = None) -> str:
     diag = read_optional(diagnostic_path)
     if diag:
         msg += "\n\n## Company Diagnostic report (context)\n\n" + diag
-    return run_agent(SYSTEM_PROMPT, msg, "pricing_billing_report.md", max_tokens=7000)
+    return run_agent(SYSTEM_PROMPT, msg, "pricing_billing_report.md", max_tokens=16000)
 
 
 if __name__ == "__main__":

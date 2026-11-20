@@ -19,7 +19,7 @@ def run(report_path: str = "outputs/discovery_report.md", context_path: str | No
     if context_path:
         user_msg += "\n\n## Business context\n\n" + Path(context_path).read_text()
 
-    result, m = call_llm(SYSTEM_PROMPT, user_msg, max_tokens=5000)
+    result, m = call_llm(SYSTEM_PROMPT, user_msg, max_tokens=7000)
     result += (
         f"\n\n---\n_Run metrics: {m.seconds:.1f}s, "
         f"{m.input_tokens} in / {m.output_tokens} out tokens, ~${m.cost_usd}_\n"

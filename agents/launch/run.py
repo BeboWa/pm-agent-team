@@ -17,7 +17,7 @@ def run(prd_path: str = "outputs/prd_item_1.md", diagnostic_path: str | None = N
     diag = read_optional(diagnostic_path)
     if diag:
         msg += "\n\n## Company Diagnostic report (context)\n\n" + diag
-    return run_agent(SYSTEM_PROMPT, msg, "launch_plan.md", max_tokens=6000)
+    return run_agent(SYSTEM_PROMPT, msg, "launch_plan.md", max_tokens=8000)
 
 
 if __name__ == "__main__":

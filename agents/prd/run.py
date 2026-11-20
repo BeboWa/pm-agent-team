@@ -23,7 +23,7 @@ def run(report_path: str = "outputs/prioritization_report.md", item: int = 1, co
     if context_path:
         user_msg += "\n\n## Business context\n\n" + Path(context_path).read_text()
 
-    prd, m = call_llm(SYSTEM_PROMPT, user_msg, max_tokens=6000)
+    prd, m = call_llm(SYSTEM_PROMPT, user_msg, max_tokens=8000)
     prd += (
         f"\n\n---\n_Run metrics: {m.seconds:.1f}s, "
         f"{m.input_tokens} in / {m.output_tokens} out tokens, ~${m.cost_usd}_\n"

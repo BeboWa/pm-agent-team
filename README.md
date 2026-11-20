@@ -2,7 +2,7 @@
 
 A team of AI agents that covers the full product management lifecycle, from company diagnosis and customer discovery to launch and post-launch analytics, built to cut PM cycle time and cost.
 
-> **Status:** All 9 components are built: the Company Diagnostic, 7 specialist agents and the Orchestrator that runs them end to end.
+> **Status:** All 11 components are built: the Company Diagnostic, 9 specialist agents (including an independent Reviewer and a one-page Executive Brief) and the Orchestrator that runs them end to end.
 
 ## Results (updated as agents ship)
 
@@ -26,6 +26,8 @@ A team of AI agents that covers the full product management lifecycle, from comp
 | 6 | Launch / GTM | Release notes, positioning, enablement | Built |
 | 7 | Analytics | Success metrics, experiment readouts, feedback loop | Built |
 | 8 | Pricing & Billing | Pricing/packaging analysis, billing-feature specs | Built |
+| 9 | Reviewer | Independent check: number grounding (in code), cross-stage consistency, unsupported claims | Built |
+| 10 | Executive Brief | One-page CEO brief: diagnosis, top bets, plan, decisions, open validation items | Built |
 
 ## Quick start
 
@@ -40,6 +42,8 @@ python -m agents.pricing_billing.run examples/company_dossier_sample.json
 python -m agents.delivery.run outputs/prd_item_1.md
 python -m agents.launch.run outputs/prd_item_1.md
 python -m agents.analytics.run outputs/prd_item_1.md --baseline 0.208 --mde 0.10
+python -m agents.reviewer.run examples/company_dossier_sample.json
+python -m agents.brief.run examples/company_dossier_sample.json
 ```
 
 ## Run the whole team in one command
@@ -50,11 +54,11 @@ python -m agents.orchestrator.run examples/company_dossier_sample.json \
   --context examples/context_sample.json \
   --manual-minutes 240
 
-# all 8 agents:
+# all 10 agents (adds the Reviewer and the Executive Brief):
 python -m agents.orchestrator.run examples/company_dossier_sample.json --full
 ```
 
-The Orchestrator runs Diagnostic, Discovery, Prioritization and PRD in order (add `--full` for Pricing & Billing, Delivery, Launch / GTM and Analytics), checks each output for required sections, and writes `outputs/pipeline_summary.md` with per-stage time, tokens and cost, plus time saved against your manual baseline.
+The Orchestrator runs Diagnostic, Discovery, Prioritization and PRD in order (add `--full` for Pricing & Billing, Delivery, Launch / GTM, Analytics, the Reviewer and the Executive Brief), checks each output for required sections, and writes `outputs/pipeline_summary.md` with per-stage time, tokens and cost, plus time saved against your manual baseline.
 
 ## Design principles
 

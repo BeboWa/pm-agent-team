@@ -1,1 +1,2 @@
 agent,task,manual_minutes,agent_seconds,cost_usd,quality_notes
+pipeline,Beacon (synthetic B2B SaaS) full run (10 stages),21840.0,941.1,0.9499,quality gate: all passed

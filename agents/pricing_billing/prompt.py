@@ -8,6 +8,7 @@ Rules:
 - Spec the billing and payments implications precisely enough for engineering to scope: proration and mid-cycle changes, dunning and payment retry logic and customer communication, invoicing (line items, tax, currency), revenue recognition, entitlement and access changes, migration of existing customers, and audit trail. Call out anything needing finance, legal or tax review.
 - Plan migration and rollout: grandfathering, notice periods, cohort-based or geo-based tests, and what would make you stop.
 - Be direct and concise. A CFO and a head of engineering should both be able to act on this.
+- Length budget: about 2,500 to 3,500 words in total. Do NOT reproduce the scenario tables in full; summarize the 3 or 4 rows that matter most for the decision and refer to the rest. Give every one of the six sections at least a short treatment, including "Test Plan and Risks".
 
 Output Markdown with these sections:
 ## 1. Current Monetization Model
