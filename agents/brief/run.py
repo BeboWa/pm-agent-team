@@ -10,6 +10,7 @@ from pathlib import Path
 
 from shared.agent import run_agent
 from shared.outputs import load_outputs
+from shared.paths import out_file
 from agents.diagnostic.metrics import compute_metrics
 from agents.pricing_billing.pricing_math import pricing_scenarios
 from .prompt import SYSTEM_PROMPT
@@ -24,7 +25,7 @@ def run(reports: dict | None = None, review_text: str | None = None,
     if not reports:
         sys.exit("No stage reports found in outputs/. Run the pipeline first.")
     if review_text is None:
-        rp = Path("outputs/review_report.md")
+        rp = out_file("review_report.md")
         review_text = rp.read_text() if rp.exists() else "(No review available.)"
     dossier = json.loads(Path(dossier_path).read_text())
 

@@ -8,7 +8,7 @@
 3. Prioritization: diagnosis (plus discovery, if provided) in, RICE-ranked roadmap out
 4. PRD: top-ranked item in, buildable PRD out
 
-With `--full`, it also runs Pricing & Billing (after the Diagnostic, and fed into Prioritization) and, after the PRD, Delivery, Launch / GTM and Analytics, then the Reviewer (independent check of all reports) and the Executive Brief (one-page summary): all 10 agents.
+With `--full`, it also runs Pricing & Billing (after the Diagnostic, and fed into Prioritization) and, after the PRD, Delivery, Launch / GTM and Analytics, then the Reviewer (independent check of all reports), the Executive Brief (one-page summary) and Deliverables (client deck and Word document): all 11 agents.
 
 **Inputs:** company dossier (required); `--feedback` file, `--context` file, `--item N`, `--full`, `--baseline` / `--mde` (Analytics sample-size math), `--manual-minutes N` (your hand-done baseline), `--no-log`.
 

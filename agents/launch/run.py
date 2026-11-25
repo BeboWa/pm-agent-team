@@ -9,11 +9,12 @@ import sys
 from pathlib import Path
 
 from shared.agent import run_agent, read_optional
+from shared.paths import out_file
 from .prompt import SYSTEM_PROMPT
 
 
-def run(prd_path: str = "outputs/prd_item_1.md", diagnostic_path: str | None = None) -> str:
-    msg = "## PRD\n\n" + Path(prd_path).read_text()
+def run(prd_path: str | None = None, diagnostic_path: str | None = None) -> str:
+    msg = "## PRD\n\n" + Path(prd_path or out_file("prd_item_1.md")).read_text()
     diag = read_optional(diagnostic_path)
     if diag:
         msg += "\n\n## Company Diagnostic report (context)\n\n" + diag

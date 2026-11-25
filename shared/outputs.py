@@ -1,5 +1,8 @@
 """Where each stage writes its report, in pipeline order."""
+from __future__ import annotations
 from pathlib import Path
+
+from shared.paths import out_dir
 
 STAGE_FILES = [
     ("Company Diagnostic", "diagnostic_report.md"),
@@ -13,11 +16,12 @@ STAGE_FILES = [
 ]
 
 
-def load_outputs(folder: str = "outputs") -> dict:
-    """Load whichever stage reports exist, in pipeline order."""
+def load_outputs(folder: str | None = None) -> dict:
+    """Load whichever stage reports exist in the current output folder, in pipeline order."""
+    base = Path(folder) if folder else out_dir()
     found = {}
     for name, fname in STAGE_FILES:
-        p = Path(folder) / fname
+        p = base / fname
         if p.exists():
             found[name] = p.read_text()
     return found

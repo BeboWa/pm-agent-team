@@ -9,11 +9,12 @@ import sys
 from pathlib import Path
 
 from shared.agent import run_agent, read_optional
+from shared.paths import out_file
 from .prompt import SYSTEM_PROMPT
 
 
-def run(prd_path: str = "outputs/prd_item_1.md", context_path: str | None = None) -> str:
-    msg = "## PRD\n\n" + Path(prd_path).read_text()
+def run(prd_path: str | None = None, context_path: str | None = None) -> str:
+    msg = "## PRD\n\n" + Path(prd_path or out_file("prd_item_1.md")).read_text()
     ctx = read_optional(context_path)
     if ctx:
         msg += "\n\n## Team and business context\n\n" + ctx

@@ -3,7 +3,7 @@ import json
 import sys
 from pathlib import Path
 
-from shared.llm import call_llm
+from shared.agent import run_agent
 from .prompt import SYSTEM_PROMPT
 
 
@@ -13,18 +13,7 @@ def run(feedback_path: str) -> str:
         f"[{i['id']}] ({i.get('source', 'unknown')}, segment: {i.get('segment', 'n/a')}) {i['text']}"
         for i in items
     )
-    report, m = call_llm(SYSTEM_PROMPT, user_msg)
-    report += (
-        f"\n\n---\n_Run metrics: {m.seconds:.1f}s, "
-        f"{m.input_tokens} in / {m.output_tokens} out tokens, ~${m.cost_usd}_\n"
-    )
-    out_dir = Path("outputs")
-    out_dir.mkdir(exist_ok=True)
-    out = out_dir / "discovery_report.md"
-    out.write_text(report)
-    print(report)
-    print(f"\nSaved to {out}")
-    return report
+    return run_agent(SYSTEM_PROMPT, user_msg, "discovery_report.md", max_tokens=5000)
 
 
 if __name__ == "__main__":

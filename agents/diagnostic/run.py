@@ -7,7 +7,7 @@ import json
 import sys
 from pathlib import Path
 
-from shared.llm import call_llm
+from shared.agent import run_agent
 from .metrics import compute_metrics
 from .prompt import SYSTEM_PROMPT
 
@@ -19,18 +19,7 @@ def run(dossier_path: str) -> str:
         "## Company dossier\n\n```json\n" + json.dumps(dossier, indent=2) + "\n```\n\n"
         "## Computed metrics (use exactly as given)\n\n```json\n" + json.dumps(metrics, indent=2) + "\n```"
     )
-    report, m = call_llm(SYSTEM_PROMPT, user_msg, max_tokens=9000)
-    report += (
-        f"\n\n---\n_Run metrics: {m.seconds:.1f}s, "
-        f"{m.input_tokens} in / {m.output_tokens} out tokens, ~${m.cost_usd}_\n"
-    )
-    out_dir = Path("outputs")
-    out_dir.mkdir(exist_ok=True)
-    out = out_dir / "diagnostic_report.md"
-    out.write_text(report)
-    print(report)
-    print(f"\nSaved to {out}")
-    return report
+    return run_agent(SYSTEM_PROMPT, user_msg, "diagnostic_report.md", max_tokens=9000)
 
 
 if __name__ == "__main__":

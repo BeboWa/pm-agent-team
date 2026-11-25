@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monetization diagnostic: company intake</title>
+<style>
+  :root { --bg:#ffffff; --card:#f7f7fb; --text:#1f2a44; --muted:#5f6675; --line:#d9d9e6; --accent:#534ab7; --accent-text:#ffffff; --bad:#a32d2d; --warn:#854f0b; --ok:#0f6e56; color-scheme: light; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#16161d; --card:#1f1f2a; --text:#ecebf7; --muted:#a3a3b8; --line:#34344a; --accent:#8a82e6; --accent-text:#101018; --bad:#f09595; --warn:#ef9f27; --ok:#5dcaa5; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.5 -apple-system, "Segoe UI", Calibri, Helvetica, Arial, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  h2 { font-size: 18px; margin: 0 0 4px; }
+  p.lead, .hint { color: var(--muted); font-size: 14px; margin: 4px 0 12px; }
+  .card { background: var(--card); border:1px solid var(--line); border-radius: 12px; padding: 16px; margin: 16px 0; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  label { display:block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  label span.opt { font-weight: 400; color: var(--muted); }
+  input[type=text], input[type=number], textarea { width:100%; padding: 8px 10px; border:1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; }
+  textarea { min-height: 84px; resize: vertical; }
+  .tier { display:grid; grid-template-columns: 2fr 1fr 2fr auto; gap: 8px; margin-bottom: 8px; align-items: center; }
+  button { font: inherit; border-radius: 8px; padding: 8px 14px; border: 1px solid var(--line); background: var(--bg); color: var(--text); cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  .note { font-size: 14px; border-left: 3px solid var(--line); padding: 4px 10px; margin: 8px 0; color: var(--muted); }
+  .note.bad { border-color: var(--bad); color: var(--bad); } .note.ok { border-color: var(--ok); color: var(--ok); }
+  #status ul { margin: 6px 0 0; padding-left: 20px; } #status li.err { color: var(--bad); } #status li.warn { color: var(--warn); }
+  .privacy { border:1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: var(--bg); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Monetization diagnostic: company intake</h1>
+  <p class="lead">Fill in aggregate figures only. Nothing you type is uploaded: this page runs entirely in your browser, and you download a small file to send back.</p>
+
+  <div class="privacy">
+    <strong>Please do not include</strong> customer names, email addresses, phone numbers, payment details or any individual's data. Totals and averages only. Approximate numbers are fine; leave a field blank if you do not know it.
+  </div>
+
+  <section class="card">
+    <h2>1. About the company</h2>
+    <div class="grid">
+      <div><label for="f_company">Company name</label><input type="text" id="f_company"></div>
+      <div><label for="f_stage">Stage <span class="opt">(optional)</span></label><input type="text" id="f_stage" placeholder="e.g. Seed, Series A, profitable"></div>
+      <div><label for="f_period">Period these figures cover</label><input type="text" id="f_period" value="last 12 months"></div>
+    </div>
+    <label for="f_description" style="margin-top:12px">What does the company sell, and to whom? <span class="opt">(1 to 2 sentences)</span></label>
+    <textarea id="f_description"></textarea>
+  </section>
+
+  <section class="card">
+    <h2>2. Revenue movement</h2>
+    <p class="hint">Monthly recurring revenue (MRR) in US dollars, at the start and end of the period, and what moved it.</p>
+    <div class="grid">
+      <div><label for="f_mrr_start">MRR at start</label><input type="number" min="0" id="f_mrr_start"></div>
+      <div><label for="f_new_mrr">New MRR from new customers</label><input type="number" min="0" id="f_new_mrr"></div>
+      <div><label for="f_expansion_mrr">Expansion MRR <span class="opt">(upgrades)</span></label><input type="number" min="0" id="f_expansion_mrr"></div>
+      <div><label for="f_contraction_mrr">Contraction MRR <span class="opt">(downgrades)</span></label><input type="number" min="0" id="f_contraction_mrr"></div>
+      <div><label for="f_churned_mrr">Churned MRR <span class="opt">(cancellations)</span></label><input type="number" min="0" id="f_churned_mrr"></div>
+      <div><label for="f_mrr_end">MRR at end</label><input type="number" min="0" id="f_mrr_end"></div>
+    </div>
+    <div id="bridge_mrr"></div>
+    <div style="margin-top:12px"><label for="f_involuntary_pct">Share of churned revenue caused by failed payments <span class="opt">(percent, if known)</span></label><input type="number" min="0" max="100" id="f_involuntary_pct" style="max-width:220px"></div>
+  </section>
+
+  <section class="card">
+    <h2>3. Customers</h2>
+    <div class="grid">
+      <div><label for="f_customers_start">Customers at start</label><input type="number" min="0" id="f_customers_start"></div>
+      <div><label for="f_new_customers">New customers</label><input type="number" min="0" id="f_new_customers"></div>
+      <div><label for="f_churned_customers">Customers lost</label><input type="number" min="0" id="f_churned_customers"></div>
+      <div><label for="f_customers_end">Customers at end</label><input type="number" min="0" id="f_customers_end"></div>
+    </div>
+    <div id="bridge_cust"></div>
+  </section>
+
+  <section class="card">
+    <h2>4. Unit economics</h2>
+    <div class="grid">
+      <div><label for="f_gross_margin_pct">Gross margin <span class="opt">(percent)</span></label><input type="number" min="0" max="100" id="f_gross_margin_pct"></div>
+      <div><label for="f_sm_spend">Sales and marketing spend in the period <span class="opt">(USD)</span></label><input type="number" min="0" id="f_sm_spend"></div>
+      <div><label for="f_cac">Cost to acquire a customer <span class="opt">(USD, optional)</span></label><input type="number" min="0" id="f_cac"></div>
+    </div>
+    <div id="cac_hint" class="hint"></div>
+  </section>
+
+  <section class="card">
+    <h2>5. Pricing and discounting</h2>
+    <p class="hint">List each plan or tier you sell.</p>
+    <div id="tiers"></div>
+    <button type="button" id="add_tier">Add a tier</button>
+    <label for="f_pricing_notes" style="margin-top:12px">Anything else about how you price <span class="opt">(per seat, usage, flat, add-ons)</span></label>
+    <textarea id="f_pricing_notes"></textarea>
+    <div class="grid" style="margin-top:12px">
+      <div><label for="f_discounted_pct">New deals that get a discount <span class="opt">(percent)</span></label><input type="number" min="0" max="100" id="f_discounted_pct"></div>
+      <div><label for="f_avg_discount_pct">Average discount size <span class="opt">(percent)</span></label><input type="number" min="0" max="100" id="f_avg_discount_pct"></div>
+      <div><label for="f_annual_pct">Customers on annual plans <span class="opt">(percent)</span></label><input type="number" min="0" max="100" id="f_annual_pct"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>6. Funnel <span class="opt" style="font-weight:400;color:var(--muted)">(optional)</span></h2>
+    <div class="grid">
+      <div><label for="f_visitors">Website visitors</label><input type="number" min="0" id="f_visitors"></div>
+      <div><label for="f_signups">Sign-ups or trials</label><input type="number" min="0" id="f_signups"></div>
+      <div><label for="f_activated">Activated <span class="opt">(reached first value)</span></label><input type="number" min="0" id="f_activated"></div>
+      <div><label for="f_paid">Became paying</label><input type="number" min="0" id="f_paid"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>7. Context</h2>
+    <label for="f_competitors">Main competitors <span class="opt">(comma separated)</span></label>
+    <input type="text" id="f_competitors">
+    <label for="f_signals" style="margin-top:12px">What customers say <span class="opt">(one theme per line, no names)</span></label>
+    <textarea id="f_signals" placeholder="Example: Customers are surprised by mid-cycle charges"></textarea>
+    <label for="f_constraints" style="margin-top:12px">Constraints <span class="opt">(one per line: team size, runway, deadlines)</span></label>
+    <textarea id="f_constraints"></textarea>
+  </section>
+
+  <section class="card">
+    <h2>8. Check and download</h2>
+    <label style="font-weight:400"><input type="checkbox" id="f_consent"> I confirm these are aggregate figures with no personal or customer-level data, and that I have permission to share them for this analysis.</label>
+    <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
+      <button type="button" id="check_btn">Check my answers</button>
+      <button type="button" class="primary" id="download_btn">Download file to send back</button>
+    </div>
+    <div id="status" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const num = (id) => { const v = $(id).value.trim(); return v === "" ? null : Number(v); };
+const pct = (id) => { const v = num(id); return v === null ? null : v / 100; };
+const lines = (id) => $(id).value.split("\n").map((s) => s.trim()).filter(Boolean);
+const fmt = (n) => Number(n).toLocaleString("en-US", { maximumFractionDigits: 0 });
+
+function addTier(name, price, limits) {
+  const row = document.createElement("div");
+  row.className = "tier";
+  row.innerHTML = '<input type="text" class="t_name" placeholder="Tier name"><input type="number" min="0" class="t_price" placeholder="USD / month"><input type="text" class="t_limits" placeholder="Limits (e.g. 5 users)"><button type="button" class="t_del" aria-label="Remove tier">Remove</button>';
+  row.querySelector(".t_name").value = name || "";
+  row.querySelector(".t_price").value = price == null ? "" : price;
+  row.querySelector(".t_limits").value = limits || "";
+  row.querySelector(".t_del").addEventListener("click", () => row.remove());
+  $("tiers").appendChild(row);
+}
+
+function readTiers() {
+  return Array.from(document.querySelectorAll("#tiers .tier")).map((r) => ({
+    tier: r.querySelector(".t_name").value.trim(),
+    price_monthly: r.querySelector(".t_price").value === "" ? null : Number(r.querySelector(".t_price").value),
+    limits: r.querySelector(".t_limits").value.trim(),
+  })).filter((t) => t.tier || t.price_monthly !== null);
+}
+
+function buildDossier() {
+  const d = {
+    company: $("f_company").value.trim(),
+    description: $("f_description").value.trim(),
+    stage: $("f_stage").value.trim(),
+    period: $("f_period").value.trim(),
+    mrr_start: num("f_mrr_start"), new_mrr: num("f_new_mrr"), expansion_mrr: num("f_expansion_mrr"),
+    contraction_mrr: num("f_contraction_mrr"), churned_mrr: num("f_churned_mrr"), mrr_end: num("f_mrr_end"),
+    involuntary_churn_share: pct("f_involuntary_pct"),
+    customers_start: num("f_customers_start"), new_customers: num("f_new_customers"),
+    churned_customers: num("f_churned_customers"), customers_end: num("f_customers_end"),
+    gross_margin: pct("f_gross_margin_pct"),
+    sales_marketing_spend: num("f_sm_spend"), blended_cac: num("f_cac"),
+    pricing: readTiers(),
+    pricing_notes: $("f_pricing_notes").value.trim(),
+    discounted_deal_share: pct("f_discounted_pct"), avg_discount: pct("f_avg_discount_pct"), annual_plan_share: pct("f_annual_pct"),
+    competitors: $("f_competitors").value.split(",").map((s) => s.trim()).filter(Boolean),
+    qualitative: lines("f_signals"),
+    known_constraints: lines("f_constraints"),
+  };
+  if (d.blended_cac === null && d.sales_marketing_spend !== null && d.new_customers) {
+    d.blended_cac = Math.round(d.sales_marketing_spend / d.new_customers);
+  }
+  const f = { visitors: num("f_visitors"), signups: num("f_signups"), activated: num("f_activated"), paid: num("f_paid") };
+  if (Object.values(f).some((v) => v !== null)) {
+    d.funnel = {};
+    Object.keys(f).forEach((k) => { if (f[k] !== null) d.funnel[k] = f[k]; });
+  }
+  Object.keys(d).forEach((k) => {
+    const v = d[k];
+    if (v === null || v === "" || (Array.isArray(v) && v.length === 0)) delete d[k];
+  });
+  d._intake = { consent: $("f_consent").checked, submitted: new Date().toISOString().slice(0, 10), source: "intake_form_v1" };
+  return d;
+}
+
+const EMAIL = /[\w.+-]+@[\w-]+\.[\w.-]+/;
+const PHONE = /(?:^|\D)(?:\+?\d{1,2}[\s.-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}(?!\d)/;
+const SSN = /\b\d{3}-\d{2}-\d{4}\b/;
+const REQUIRED = ["mrr_start", "new_mrr", "expansion_mrr", "contraction_mrr", "churned_mrr", "mrr_end", "customers_start", "new_customers", "churned_customers", "customers_end", "gross_margin"];
+
+function collectStrings(obj, path, out) {
+  if (typeof obj === "string") out.push([path, obj]);
+  else if (Array.isArray(obj)) obj.forEach((v, i) => collectStrings(v, path + "[" + i + "]", out));
+  else if (obj && typeof obj === "object") Object.keys(obj).forEach((k) => { if (k[0] !== "_") collectStrings(obj[k], path ? path + "." + k : k, out); });
+}
+
+function checkDossier(d) {
+  const errors = [], warnings = [];
+  if (!d.company) errors.push("Please enter the company name.");
+  REQUIRED.forEach((k) => { if (typeof d[k] !== "number") errors.push("Please fill in: " + k.replace(/_/g, " ") + "."); });
+  if (!d.pricing || d.pricing.length === 0) errors.push("Please list at least one pricing tier.");
+  if (REQUIRED.slice(0, 6).every((k) => typeof d[k] === "number")) {
+    const exp = d.mrr_start + d.new_mrr + d.expansion_mrr - d.contraction_mrr - d.churned_mrr;
+    if (Math.abs(exp - d.mrr_end) > Math.max(0.01 * d.mrr_end, 1)) errors.push("MRR does not add up: start + new + expansion - contraction - churned = " + fmt(exp) + ", but you entered " + fmt(d.mrr_end) + " for the end.");
+  }
+  if (["customers_start", "new_customers", "churned_customers", "customers_end"].every((k) => typeof d[k] === "number")) {
+    const exp = d.customers_start + d.new_customers - d.churned_customers;
+    if (Math.abs(exp - d.customers_end) > Math.max(0.01 * d.customers_end, 2)) errors.push("Customers do not add up: start + new - lost = " + fmt(exp) + ", but you entered " + fmt(d.customers_end) + " for the end.");
+  }
+  if (d.funnel) {
+    const steps = ["visitors", "signups", "activated", "paid"].filter((k) => typeof d.funnel[k] === "number");
+    for (let i = 1; i < steps.length; i++) if (d.funnel[steps[i]] > d.funnel[steps[i - 1]]) errors.push("Funnel: " + steps[i] + " is larger than " + steps[i - 1] + ".");
+  }
+  ["gross_margin", "involuntary_churn_share", "discounted_deal_share", "avg_discount", "annual_plan_share"].forEach((k) => { if (typeof d[k] === "number" && (d[k] > 1 || d[k] < 0)) errors.push(k.replace(/_/g, " ") + " must be between 0 and 100 percent."); });
+  const strs = []; collectStrings(d, "", strs);
+  strs.forEach(([p, t]) => {
+    if (EMAIL.test(t) || PHONE.test(t) || SSN.test(t)) errors.push("Please remove personal details (email, phone or ID number) from: " + p + ".");
+  });
+  ["involuntary_churn_share", "discounted_deal_share", "avg_discount", "annual_plan_share", "blended_cac"].forEach((k) => { if (typeof d[k] !== "number") warnings.push("Optional but helpful: " + k.replace(/_/g, " ") + "."); });
+  if (!d._intake || !d._intake.consent) errors.push("Please tick the confirmation box.");
+  return { errors, warnings };
+}
+
+function showStatus(res, okMsg) {
+  const box = $("status");
+  box.textContent = "";
+  const ul = document.createElement("ul");
+  res.errors.forEach((e) => { const li = document.createElement("li"); li.className = "err"; li.textContent = e; ul.appendChild(li); });
+  res.warnings.forEach((w) => { const li = document.createElement("li"); li.className = "warn"; li.textContent = w; ul.appendChild(li); });
+  if (!res.errors.length) { const p = document.createElement("div"); p.className = "note ok"; p.textContent = okMsg; box.appendChild(p); }
+  if (ul.children.length) box.appendChild(ul);
+}
+
+function download() {
+  const d = buildDossier();
+  const res = checkDossier(d);
+  if (res.errors.length) { showStatus(res, ""); return; }
+  const slug = (d.company || "company").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "company";
+  const blob = new Blob([JSON.stringify(d, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "dossier_" + slug + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  showStatus(res, "Downloaded. Please send the file back to your contact.");
+}
+
+function liveHints() {
+  const d = buildDossier();
+  const m = $("bridge_mrr"); m.textContent = "";
+  if (REQUIRED.slice(0, 6).every((k) => typeof d[k] === "number")) {
+    const exp = d.mrr_start + d.new_mrr + d.expansion_mrr - d.contraction_mrr - d.churned_mrr;
+    const ok = Math.abs(exp - d.mrr_end) <= Math.max(0.01 * d.mrr_end, 1);
+    const div = document.createElement("div"); div.className = "note " + (ok ? "ok" : "bad");
+    div.textContent = ok ? "Revenue adds up." : "Start + new + expansion - contraction - churned = " + fmt(exp) + ". That does not match the end MRR you entered.";
+    m.appendChild(div);
+  }
+  const c = $("bridge_cust"); c.textContent = "";
+  if (["customers_start", "new_customers", "churned_customers", "customers_end"].every((k) => typeof d[k] === "number")) {
+    const exp = d.customers_start + d.new_customers - d.churned_customers;
+    const ok = Math.abs(exp - d.customers_end) <= Math.max(0.01 * d.customers_end, 2);
+    const div = document.createElement("div"); div.className = "note " + (ok ? "ok" : "bad");
+    div.textContent = ok ? "Customers add up." : "Start + new - lost = " + fmt(exp) + ". That does not match the end count you entered.";
+    c.appendChild(div);
+  }
+  const h = $("cac_hint");
+  h.textContent = (num("f_cac") === null && num("f_sm_spend") !== null && num("f_new_customers")) ? "If you leave this blank, we will use sales and marketing spend divided by new customers: " + fmt(num("f_sm_spend") / num("f_new_customers")) + "." : "";
+}
+
+addTier(); addTier();
+document.querySelectorAll("input, textarea").forEach((el) => el.addEventListener("input", liveHints));
+$("add_tier").addEventListener("click", () => addTier());
+$("check_btn").addEventListener("click", () => { const d = buildDossier(); showStatus(checkDossier(d), "Looks good. You can download the file."); });
+$("download_btn").addEventListener("click", download);
+</script>
+</body>
+</html>

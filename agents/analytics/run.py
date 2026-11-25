@@ -11,13 +11,14 @@ import json
 from pathlib import Path
 
 from shared.agent import run_agent, read_optional
+from shared.paths import out_file
 from .prompt import SYSTEM_PROMPT
 from .stats import sample_size_per_arm
 
 
-def run(prd_path: str = "outputs/prd_item_1.md", diagnostic_path: str | None = None,
+def run(prd_path: str | None = None, diagnostic_path: str | None = None,
         baseline: float | None = None, mde: float | None = None) -> str:
-    msg = "## PRD\n\n" + Path(prd_path).read_text()
+    msg = "## PRD\n\n" + Path(prd_path or out_file("prd_item_1.md")).read_text()
     diag = read_optional(diagnostic_path)
     if diag:
         msg += "\n\n## Company Diagnostic report (context)\n\n" + diag
@@ -29,7 +30,7 @@ def run(prd_path: str = "outputs/prd_item_1.md", diagnostic_path: str | None = N
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("prd", nargs="?", default="outputs/prd_item_1.md")
+    ap.add_argument("prd", nargs="?", default=None)
     ap.add_argument("--diagnostic", default=None)
     ap.add_argument("--baseline", type=float, default=None, help="baseline conversion rate, e.g. 0.208")
     ap.add_argument("--mde", type=float, default=None, help="relative minimum detectable effect, e.g. 0.10")
